@@ -1,4 +1,4 @@
--- RANKING DE SEVERIDADE BIOMA (6 = PANTANAL)
+-- RANKING DE SEVERIDADE BIOMA UF
 
 --Nesta seleção passam a ser observados e selecionados apenas os eventos mais severos e ainda ativos das últimas 24 horas.
 --Código alterado para trazer somente o nome das cidades que contém a maior parte do evento.
@@ -18,9 +18,8 @@ WITH RankedEventos AS (
   JOIN bases_auxiliares.ibge_bc250_lim_unidade_federacao_a i ON ST_Intersects(i.geom, q.geom_acumulada)
   JOIN bases_auxiliares.ibge_bc250_lim_municipio_a m ON ST_Intersects(m.geom, q.geom_acumulada)
   JOIN queimadas.tb_escopo_queimadas x ON ST_Intersects(x.geom, q.geom_acumulada)
-  JOIN queimadas.tb_bioma_subdividida y ON ST_Intersects(y.geom, q.geom_acumulada)
   WHERE q.dt_max_evento >= now () - interval '1 day'
-    AND y.cd_bioma = 6 -- ALTERAR CÓDIGO DE ACORDO COM O BIOMA DESEJADO
+ AND i.sigla = 'PA' -- ALTERAR CÓDIGO DE ACORDO COM A UF DESEJADA
 ),
 CidadePrincipal AS (
   SELECT
@@ -43,4 +42,4 @@ JOIN RankedEventos r2 ON r1.id_evento = r2.id_evento
 JOIN CidadePrincipal c ON r1.id_evento = c.id_evento AND c.rn_area = 1
 WHERE r1.rn_peso = 1 AND r2.rn_tempo = 1
 ORDER BY "Severidade" desc
-LIMIT 10;
+LIMIT 20;
