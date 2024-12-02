@@ -1,4 +1,4 @@
---- Verificar novos eventos de fogo bioma
+--- Verificar novos eventos de fogo UF
 
 -- Mesmo definindo o poríodo de pesquisa, o resultado pode sofrer alterações dependendo da hora em que o script é executado.
 -- Se algum evento da seleção tiver seu limiar de 24 horas da última detecção após a hora delimitada da consulta, alterações poderão ser observadas.
@@ -20,15 +20,13 @@ JOIN
     queimadas.tb_escopo_queimadas AS esc
 ON 
     ST_Intersects(ev1.geom, esc.geom)
-INNER JOIN queimadas.tb_bioma_subdividida bioma ON st_intersects (bioma.geom, ev1.geom)	
 WHERE 
-    ev2.sg_uf in ('MS', 'MT') -- Substitua 'MS' pela sigla do estado desejado
+    ev2.sg_uf = 'PA' -- Substitua pela sigla do estado desejado
     AND area_km2 > 1
 	AND ev1.dt_minima::date >= '2024-09-19'::date  -- escolher data de ínicio dos eventos
 	AND ev1.dt_minima::date <='2024-09-20'::date  -- escolher data de ínicio dos eventos
-	AND bioma.cd_bioma = 6 -- ALTERAR CÓDIGO DE ACORDO COM O BIOMA DESEJADO
 	AND ev1.dt_maxima BETWEEN '2024-09-19 04:00:00' AND '2024-09-20 04:00:00'  -- definir o perído de intervalo da consulta do status do evento
 GROUP BY 
     ev1.id, ev2.nome, ev2.sg_uf, ev1.geom
 ORDER BY 4 DESC
-LIMIT 5
+LIMIT 10
