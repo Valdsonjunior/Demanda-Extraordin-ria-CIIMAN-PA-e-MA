@@ -1,4 +1,4 @@
--- EVENTOS ACUMULADOS (BIOMA) COM DATAS SEM EVENTOS
+-- EVENTOS ACUMULADOS (UF) COM DATAS SEM EVENTOS
  
 -- Criação de uma tabela de datas temporária para o intervalo especificado
 WITH RECURSIVE DateRange AS (
@@ -22,13 +22,10 @@ EventosFogo AS (
     JOIN 
         queimadas.tb_escopo_queimadas AS escopo
         ON ST_Intersects(ev1.geom, escopo.geom)
-    JOIN 
-        queimadas.tb_bioma_subdividida AS bioma
-        ON ST_Intersects(ev1.geom, bioma.geom)
-    WHERE 
+   WHERE 
         ev1.id_status_evento IN (1, 2, 3) -- Condição de eventos ativos, em observação
         AND ev1.area_km2 > 1 -- Condição de área maior que 1km2
-        AND bioma.cd_bioma = 6 -- Filtro para o bioma Pantanal
+        AND ep.sigla = 'PA' -- Filtro para a UF desejada
         AND ev1.dt_minima >= '2024-01-01'
         AND ev1.dt_minima <= '2025-01-01' -- Define período a ser investigado
     GROUP BY 
